@@ -1,0 +1,39 @@
+name: Documentation Issue
+description: Report missing, incorrect, or unclear documentation
+labels: ["type: documentation", "status: triage"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page / Section
+      description: URL or section title of the affected docs
+      placeholder: "e.g. https://aralabs.ai/docs → Quickstart"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Type of Problem
+      options:
+        - Incorrect information
+        - Missing information
+        - Unclear / hard to follow
+        - Broken link or example
+        - Typo / grammar
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: What Does It Currently Say / Show?
+    validations:
+      required: true
+
+  - type: textarea
+    id: correct
+    attributes:
+      label: What Should It Say / Show?
+    validations:
+      required: true

@@ -1,0 +1,39 @@
+name: Question / Support
+description: Ask a how-to question about ARA Community Edition
+labels: ["type: question", "status: triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [documentation](https://aralabs.ai/docs) before filing — your question may already be answered.
+
+  - type: input
+    id: version
+    attributes:
+      label: ARA CE Version
+      placeholder: "e.g. v1.0.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: Be as specific as possible
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What Have You Tried?
+      description: What docs did you read? What did you attempt?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Relevant Config / Code
+      description: Paste relevant config or pseudocode if applicable
+      render: shell

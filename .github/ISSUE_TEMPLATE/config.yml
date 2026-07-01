@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security Vulnerability
+    url: https://aralabs.ai/security
+    about: "⚠️ Do NOT open a public issue for security vulnerabilities. Use this link to email security@aralabs.ai."
+  - name: Enterprise Support
+    url: https://aralabs.ai/enterprise
+    about: "Enterprise customers — contact ARA AI Labs via the enterprise contact form."
+  - name: Documentation
+    url: https://aralabs.ai/docs
+    about: "Read the ARA CE documentation before filing a question."

@@ -1,0 +1,63 @@
+name: Performance Issue
+description: Report a latency regression, throughput drop, or memory issue
+labels: ["type: performance", "status: triage"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: ARA CE Version
+      placeholder: "e.g. v1.0.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Linux x86_64
+        - Linux ARM64
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Docker (linux/amd64)
+        - Docker (linux/arm64)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What performance issue are you seeing?
+      description: Describe the symptom — latency spike, throughput drop, memory growth, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: numbers
+    attributes:
+      label: Observed vs Expected Numbers
+      description: e.g. "P99 latency is 45ms, expected <5ms at 1000 req/s"
+    validations:
+      required: true
+
+  - type: textarea
+    id: workload
+    attributes:
+      label: Workload Description
+      description: Number of features, request rate, feature schema size, replication setup
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to Reproduce
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Metrics / Logs
+      description: Prometheus metrics, server logs, or benchmark output
+      render: shell
