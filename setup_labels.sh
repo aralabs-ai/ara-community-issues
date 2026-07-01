@@ -1,20 +1,47 @@
 #!/usr/bin/env bash
 # Run this once with a classic PAT that has repo scope:
-#   GH_TOKEN=ghp_... bash setup_labels.sh
+#   LABEL_TOKEN=ghp_... bash setup_labels.sh
+#
+# Generate a classic PAT at: https://github.com/settings/tokens
+# Required scope: repo (or just public_repo for public repos)
 set -e
 REPO="aralabs-ai/ara-community-issues"
 
+if [[ -z "$LABEL_TOKEN" ]]; then
+  echo "Error: LABEL_TOKEN is not set."
+  echo "Usage: LABEL_TOKEN=ghp_... bash setup_labels.sh"
+  exit 1
+fi
+
+API_BASE="https://api.github.com/repos/$REPO/labels"
+AUTH_HEADER="Authorization: Bearer $LABEL_TOKEN"
+
 delete_default() {
-  gh api "repos/$REPO/labels/$1" --method DELETE 2>/dev/null || true
+  local encoded
+  encoded=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$1'))")
+  curl -s -o /dev/null -X DELETE \
+    -H "$AUTH_HEADER" -H "Accept: application/vnd.github+json" \
+    "$API_BASE/$encoded" 2>/dev/null || true
 }
 
 create_label() {
   local name="$1" color="$2" desc="$3"
-  gh api "repos/$REPO/labels" --method POST \
-    -f name="$name" -f color="$color" -f description="$desc" \
-    --silent 2>/dev/null || \
-  gh api "repos/$REPO/labels/$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$name'''))")" --method PATCH \
-    -f name="$name" -f color="$color" -f description="$desc" --silent
+  # Try POST (create); if 422 (already exists) try PATCH (update)
+  local status
+  status=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+    -H "$AUTH_HEADER" -H "Accept: application/vnd.github+json" \
+    -H "Content-Type: application/json" \
+    -d "{\"name\":$(python3 -c "import json,sys; print(json.dumps(sys.argv[1]))" "$name"),\"color\":\"$color\",\"description\":$(python3 -c "import json,sys; print(json.dumps(sys.argv[1]))" "$desc")}" \
+    "$API_BASE")
+  if [[ "$status" == "422" ]]; then
+    local encoded
+    encoded=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$name'))")
+    curl -s -o /dev/null -X PATCH \
+      -H "$AUTH_HEADER" -H "Accept: application/vnd.github+json" \
+      -H "Content-Type: application/json" \
+      -d "{\"name\":$(python3 -c "import json,sys; print(json.dumps(sys.argv[1]))" "$name"),\"color\":\"$color\",\"description\":$(python3 -c "import json,sys; print(json.dumps(sys.argv[1]))" "$desc")}" \
+      "$API_BASE/$encoded"
+  fi
   echo "  ✓ $name"
 }
 
